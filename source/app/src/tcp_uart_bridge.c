@@ -1,4 +1,5 @@
 #include "tcp_uart_bridge.h"
+#include "systick.h"
 #include <string.h>
 #include <stddef.h>
 
@@ -49,6 +50,7 @@ static void reset_queues(TcpUartBridge_t *br)
     br->uart2tcp_head = 0;
     br->uart2tcp_tail = 0;
     br->uart2tcp_count = 0;
+    br->uart2tcp_flush_timer = SYSTICK_GET_VALUE();
 
     br->tcp2uart_head = 0;
     br->tcp2uart_tail = 0;
@@ -104,11 +106,13 @@ static void rx_data_callback(w5500_socket_tcp_serv_t *sock, uint8_t *data, uint1
 /////////////////////////////////////////////////////////////////////////
 // UART -> TCP
 //
-// Никакого ожидания паузы в приеме и никакого накопления "пакета" до
-// определенного размера - это и было причиной зависаний. Забираем из
-// UART все, что накопилось к текущему вызову process(), и как только
-// сокет готов - сразу отправляем то, что есть. Именно так работает
-// эталонный tcp_serial_redirect.py (sendall() на каждый data_received).
+// Захват трафика (123.csv) показал: W5500 сам НИЧЕГО не накапливает -
+// каждый вызов w5500_tcp_serv_tx() немедленно уходит в эфир отдельным
+// TCP-сегментом с флагом PSH, даже если в нем 1-2 байта. Поэтому
+// накопление делаем сами, но не через 100-мс паузу (это и рвало сессии
+// раньше), а через короткую паузу TCP_UART_BRIDGE_FLUSH_DELAY_MS,
+// которая с запасом перекрывает межбайтовый интервал на скорости UART,
+// но на порядки меньше пауз между разными сообщениями протокола.
 /////////////////////////////////////////////////////////////////////////
 static void uart2tcp_pull(TcpUartBridge_t *br)
 {
@@ -126,6 +130,7 @@ static void uart2tcp_pull(TcpUartBridge_t *br)
         br->uart2tcp_buff[br->uart2tcp_head] = (uint8_t)c;
         br->uart2tcp_head = (uint16_t)((br->uart2tcp_head + 1) % TCP_UART_BRIDGE_BUFFER_SIZE);
         br->uart2tcp_count++;
+        br->uart2tcp_flush_timer = SYSTICK_GET_VALUE(); // "часы" паузы сбрасываются на каждый новый байт
     }
 }
 
@@ -136,6 +141,13 @@ static void uart2tcp_push(TcpUartBridge_t *br)
 
     if (!br->connected || !w5500_tcp_serv_tx_isready(&br->sock))
         return; // подождем следующего вызова process(), байты остаются в очереди
+
+    // Ждем короткую паузу в приеме UART (признак конца "пачки") - либо
+    // отправляем раньше, если данных накопилось уже прилично, чтобы
+    // задержка не росла неограниченно на непрерывном потоке без пауз.
+    if (br->uart2tcp_count < TCP_UART_BRIDGE_FLUSH_SIZE &&
+        (uint32_t)(SYSTICK_GET_VALUE() - br->uart2tcp_flush_timer) < TCP_UART_BRIDGE_FLUSH_DELAY_MS)
+        return;
 
     uint16_t buff_size;
     uint8_t *buff = w5500_tcp_serv_get_tx_buffer(&br->sock, &buff_size);
