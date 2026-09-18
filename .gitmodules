@@ -1,0 +1,10 @@
+[submodule "source/external/RingFIFO"]
+	path = source/external/RingFIFO
+	url = https://github.com/DiMoonElec/RingFIFO.git
+[submodule "source/external/SerialRingBuffer"]
+	path = source/external/SerialRingBuffer
+	url = https://github.com/DiMoonElec/SerialRingBuffer.git
+[submodule "source/external/ModbusSlave"]
+	path = source/external/ModbusSlave
+	url = https://github.com/DiMoonElec/ModbusSlave
+	branch = dev
