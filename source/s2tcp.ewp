@@ -2194,6 +2194,9 @@
         <group>
             <name>inc</name>
             <file>
+                <name>$PROJ_DIR$\app\inc\app_bridge.h</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\app\inc\modbus_reg_model.h</name>
             </file>
             <file>
@@ -2211,6 +2214,9 @@
         </group>
         <group>
             <name>src</name>
+            <file>
+                <name>$PROJ_DIR$\app\src\app_bridge.c</name>
+            </file>
             <file>
                 <name>$PROJ_DIR$\app\src\main.c</name>
             </file>

@@ -44,14 +44,29 @@ tx-буфера сокета: отправка идет частями по ме
 протокола, иначе вернется прежнее зависание. Единицы измерения должны
 совпадать с единицами SYSTICK_GET_VALUE(). Подбирайте под свой захват
 трафика: должно с запасом перекрывать паузы ВНУТРИ пачки байт и быть
-намного меньше пауз МЕЖДУ пачками. */
+намного меньше пауз МЕЖДУ пачками.
+
+Это значение по умолчанию (используется в tcp_uart_bridge_init). Во время
+работы его можно менять через tcp_uart_bridge_set_flush_delay_ms(). */
 #ifndef TCP_UART_BRIDGE_FLUSH_DELAY_MS
 #define TCP_UART_BRIDGE_FLUSH_DELAY_MS 2
 #endif
 
+/* Верхняя граница для tcp_uart_bridge_set_flush_delay_ms(): значение
+должно оставаться "короткой паузой", а не таймаутом на секунды -
+иначе вернется эффект зависания сессий, из-за которого от 100 мс в
+свое время отказались. Поднимайте с осторожностью, если 1 секунды
+объективно мало для вашего протокола. */
+#ifndef TCP_UART_BRIDGE_FLUSH_DELAY_MS_MAX
+#define TCP_UART_BRIDGE_FLUSH_DELAY_MS_MAX 1000u
+#endif
+
 /* Если данных накопилось уже столько - отправляем не дожидаясь паузы.
 Защита от непрерывного потока без пауз (иначе задержка росла бы
-неограниченно, пока UART не замолчит). */
+неограниченно, пока UART не замолчит).
+
+Это значение по умолчанию (используется в tcp_uart_bridge_init). Во время
+работы его можно менять через tcp_uart_bridge_set_flush_size(). */
 #ifndef TCP_UART_BRIDGE_FLUSH_SIZE
 #define TCP_UART_BRIDGE_FLUSH_SIZE 512
 #endif
@@ -82,7 +97,13 @@ typedef struct
     volatile uint16_t uart2tcp_tail;
     volatile uint16_t uart2tcp_count;
     uint32_t uart2tcp_flush_timer; /* момент (SYSTICK) последнего принятого байта UART */
-    uint32_t uart2tcp_dropped; /* счетчик потерянных байт при переполнении очереди (диагностика) */
+    uint32_t uart2tcp_dropped;     /* счетчик потерянных байт при переполнении очереди (диагностика) */
+
+    /* Настраиваемые во время работы параметры батчинга UART -> TCP.
+    Инициализируются значениями TCP_UART_BRIDGE_FLUSH_DELAY_MS/_SIZE в
+    tcp_uart_bridge_init(), далее меняются через сеттеры (см. ниже). */
+    uint32_t uart2tcp_flush_delay_ms;
+    uint16_t uart2tcp_flush_size;
 
     /* ==== TCP -> UART (кольцевая программная очередь) ==== */
     uint8_t tcp2uart_buff[TCP_UART_BRIDGE_QUEUE_SIZE];
@@ -98,5 +119,27 @@ int8_t tcp_uart_bridge_init(TcpUartBridge_t *instance, w5500_t *c, SerialRingBuf
 
 void tcp_uart_bridge_process(TcpUartBridge_t *instance);
 uint8_t tcp_uart_bridge_isConnected(TcpUartBridge_t *instance);
+
+/////////////////////////////////////////////////////////////////////////
+// Геттеры/сеттеры настраиваемых параметров батчинга UART -> TCP
+//
+// По умолчанию (после tcp_uart_bridge_init) используются значения
+// TCP_UART_BRIDGE_FLUSH_DELAY_MS и TCP_UART_BRIDGE_FLUSH_SIZE. Сеттеры
+// проверяют переданное значение и возвращают:
+//   0  - значение принято и применено;
+//  -1  - instance == NULL;
+//  -2  - значение не прошло валидацию (не применено, старое сохранено).
+/////////////////////////////////////////////////////////////////////////
+
+/* Допустимый диапазон: 0 .. TCP_UART_BRIDGE_FLUSH_DELAY_MS_MAX.
+0 означает "не ждать паузу вообще" (флаш будет управляться только
+tcp_uart_bridge_set_flush_size()/достижением порога размера). */
+int8_t tcp_uart_bridge_set_flush_delay_ms(TcpUartBridge_t *instance, uint32_t delay_ms);
+uint32_t tcp_uart_bridge_get_flush_delay_ms(TcpUartBridge_t *instance);
+
+/* Допустимый диапазон: 1 .. TCP_UART_BRIDGE_BUFFER_SIZE (размер кольцевой
+очереди UART -> TCP - больший порог никогда не сработает). */
+int8_t tcp_uart_bridge_set_flush_size(TcpUartBridge_t *instance, uint16_t flush_size);
+uint16_t tcp_uart_bridge_get_flush_size(TcpUartBridge_t *instance);
 
 #endif /* __TCP_UART_BRIDGE_H__ */

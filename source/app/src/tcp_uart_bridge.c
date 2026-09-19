@@ -26,6 +26,11 @@ int8_t tcp_uart_bridge_init(TcpUartBridge_t *instance, w5500_t *c, SerialRingBuf
     memset(instance, 0, sizeof(TcpUartBridge_t));
     instance->srb = srb;
 
+    /* Стартовые значения настраиваемых параметров батчинга - берутся из
+    #define, далее их можно менять через tcp_uart_bridge_set_flush_*() */
+    instance->uart2tcp_flush_delay_ms = TCP_UART_BRIDGE_FLUSH_DELAY_MS;
+    instance->uart2tcp_flush_size = TCP_UART_BRIDGE_FLUSH_SIZE;
+
     /* Передаем указатели на внутренние буферы структуры и их размеры из #define */
     int8_t res = w5500_tcp_serv_init(c, &instance->sock, sockID, port,
                                      instance->tcp_txbuffer, TCP_UART_BRIDGE_TCP_TX_BUFFER_SIZE,
@@ -145,8 +150,8 @@ static void uart2tcp_push(TcpUartBridge_t *br)
     // Ждем короткую паузу в приеме UART (признак конца "пачки") - либо
     // отправляем раньше, если данных накопилось уже прилично, чтобы
     // задержка не росла неограниченно на непрерывном потоке без пауз.
-    if (br->uart2tcp_count < TCP_UART_BRIDGE_FLUSH_SIZE &&
-        (uint32_t)(SYSTICK_GET_VALUE() - br->uart2tcp_flush_timer) < TCP_UART_BRIDGE_FLUSH_DELAY_MS)
+    if (br->uart2tcp_count < br->uart2tcp_flush_size &&
+        (uint32_t)(SYSTICK_GET_VALUE() - br->uart2tcp_flush_timer) < br->uart2tcp_flush_delay_ms)
         return;
 
     uint16_t buff_size;
@@ -205,4 +210,57 @@ void tcp_uart_bridge_process(TcpUartBridge_t *instance)
     w5500_tcp_serv_process(&instance->sock);
     uart2tcp_process(instance);
     tcp2uart_process(instance);
+}
+
+/////////////////////////////////////////////////////////////////////////
+// Геттеры/сеттеры настраиваемых параметров батчинга UART -> TCP
+/////////////////////////////////////////////////////////////////////////
+int8_t tcp_uart_bridge_set_flush_delay_ms(TcpUartBridge_t *instance, uint32_t delay_ms)
+{
+    if (instance == 0)
+        return -1;
+
+    // 0 - допустимое значение (флаш только по TCP_UART_BRIDGE_FLUSH_SIZE),
+    // а вот слишком большая пауза превращает "короткую паузу между
+    // пачками" обратно в тот самый 100-мс таймаут, из-за которого рвались
+    // сессии (см. комментарий у TCP_UART_BRIDGE_FLUSH_DELAY_MS в .h).
+    if (delay_ms > TCP_UART_BRIDGE_FLUSH_DELAY_MS_MAX)
+        return -2;
+
+    instance->uart2tcp_flush_delay_ms = delay_ms;
+    return 0;
+}
+
+uint32_t tcp_uart_bridge_get_flush_delay_ms(TcpUartBridge_t *instance)
+{
+    if (instance == 0)
+        return 0;
+
+    return instance->uart2tcp_flush_delay_ms;
+}
+
+int8_t tcp_uart_bridge_set_flush_size(TcpUartBridge_t *instance, uint16_t flush_size)
+{
+    if (instance == 0)
+        return -1;
+
+    // 0 бессмысленен (условие "count < flush_size" никогда не истинно
+    // и флаш будет срабатывать только по таймеру/готовности сокета -
+    // это делает поведение непредсказуемым для вызывающего кода), а
+    // значение больше размера самой очереди UART -> TCP никогда не
+    // сработает, т.к. до него очередь просто не дорастет (см. дропы в
+    // uart2tcp_pull при uart2tcp_count >= TCP_UART_BRIDGE_BUFFER_SIZE).
+    if (flush_size == 0 || flush_size > TCP_UART_BRIDGE_BUFFER_SIZE)
+        return -2;
+
+    instance->uart2tcp_flush_size = flush_size;
+    return 0;
+}
+
+uint16_t tcp_uart_bridge_get_flush_size(TcpUartBridge_t *instance)
+{
+    if (instance == 0)
+        return 0;
+
+    return instance->uart2tcp_flush_size;
 }
