@@ -7,6 +7,7 @@
 #include "hw_timer_config.h"
 #include "hw_adc_config.h"
 #include "hw_uart_config.h"
+#include "hw_i2c_config.h"
 
 /******************************************************************************/
 
@@ -22,6 +23,8 @@ static void __nvic_init(void)
   NVIC_SetPriority(PendSV_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0));
   NVIC_SetPriority(SysTick_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 15, 0));
   nvic_irq_enable(DMA1_Channel1_IRQn, 0, 0);
+  nvic_irq_enable(I2C1_EVT_IRQn, 0, 0);
+  nvic_irq_enable(I2C1_ERR_IRQn, 0, 0);
   nvic_irq_enable(USART1_IRQn, 0, 0);
 }
 
@@ -47,6 +50,9 @@ static void __periph_clock_init(void)
 
   /* enable spi2 periph clock */
   crm_periph_clock_enable(CRM_SPI2_PERIPH_CLOCK, TRUE);
+
+  /* enable i2c1 periph clock */
+  crm_periph_clock_enable(CRM_I2C1_PERIPH_CLOCK, TRUE);
 }
 
 static void __clkout_init(void)
@@ -98,6 +104,7 @@ void hw_config(void)
   hw_dma_config();
   //hw_adc_config();
   hw_uart_config();
+  hw_i2c_config();
   
   __nvic_init();
 

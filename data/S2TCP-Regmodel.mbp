@@ -55,7 +55,7 @@
    </RowHight>
    <ScrollPosV>0</ScrollPosV>
    <ScrollPosH>0</ScrollPosH>
-   <FocusRow>19</FocusRow>
+   <FocusRow>3</FocusRow>
    <FocusCol>1</FocusCol>
    <LogText>
       <Eachread>0</Eachread>
@@ -98,18 +98,18 @@
          <F f="0" v="0"/>
          <F f="0" v="0"/>
          <F f="0" v="0"/>
+         <F f="0" v="192"/>
+         <F f="0" v="168"/>
+         <F f="0" v="88"/>
+         <F f="0" v="129"/>
+         <F f="0" v="255"/>
+         <F f="0" v="255"/>
+         <F f="0" v="255"/>
          <F f="0" v="0"/>
-         <F f="0" v="0"/>
-         <F f="0" v="0"/>
-         <F f="0" v="0"/>
-         <F f="0" v="0"/>
-         <F f="0" v="0"/>
-         <F f="0" v="0"/>
-         <F f="0" v="0"/>
-         <F f="0" v="0"/>
-         <F f="0" v="0"/>
-         <F f="0" v="0"/>
-         <F f="0" v="0"/>
+         <F f="0" v="192"/>
+         <F f="0" v="168"/>
+         <F f="0" v="88"/>
+         <F f="0" v="1"/>
          <F f="0" v="2"/>
          <F f="0" v="0"/>
          <F f="0" v="512"/>
@@ -136,29 +136,29 @@
          <B>0</B>
          <B>0</B>
          <B>0</B>
+         <B>192</B>
+         <B>0</B>
+         <B>168</B>
+         <B>0</B>
+         <B>88</B>
+         <B>0</B>
+         <B>129</B>
+         <B>0</B>
+         <B>255</B>
+         <B>0</B>
+         <B>255</B>
+         <B>0</B>
+         <B>255</B>
          <B>0</B>
          <B>0</B>
          <B>0</B>
+         <B>192</B>
          <B>0</B>
+         <B>168</B>
          <B>0</B>
+         <B>88</B>
          <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
-         <B>0</B>
+         <B>1</B>
          <B>0</B>
          <B>2</B>
          <B>0</B>
@@ -194,6 +194,90 @@
          <B>0</B>
       </Bytes>
       <CellData>
+         <Cell idx="0">
+            <Colors/>
+            <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>
+            <Name>SAVE_EEPROM</Name>
+            <Font used="false"/>
+         </Cell>
+         <Cell idx="2">
+            <Colors/>
+            <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>
+            <Name>REBOOT</Name>
+            <Font used="false"/>
+         </Cell>
+         <Cell idx="4">
+            <Colors/>
+            <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>
+            <Name>NET_IP_0</Name>
+            <Font used="false"/>
+         </Cell>
+         <Cell idx="5">
+            <Colors/>
+            <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>
+            <Name>NET_IP_1</Name>
+            <Font used="false"/>
+         </Cell>
+         <Cell idx="6">
+            <Colors/>
+            <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>
+            <Name>NET_IP_2</Name>
+            <Font used="false"/>
+         </Cell>
+         <Cell idx="7">
+            <Colors/>
+            <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>
+            <Name>NET_IP_3</Name>
+            <Font used="false"/>
+         </Cell>
+         <Cell idx="8">
+            <Colors/>
+            <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>
+            <Name>NET_SUBNET_0</Name>
+            <Font used="false"/>
+         </Cell>
+         <Cell idx="9">
+            <Colors/>
+            <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>
+            <Name>NET_SUBNET_1</Name>
+            <Font used="false"/>
+         </Cell>
+         <Cell idx="10">
+            <Colors/>
+            <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>
+            <Name>NET_SUBNET_2</Name>
+            <Font used="false"/>
+         </Cell>
+         <Cell idx="11">
+            <Colors/>
+            <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>
+            <Name>NET_SUBNET_3</Name>
+            <Font used="false"/>
+         </Cell>
+         <Cell idx="12">
+            <Colors/>
+            <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>
+            <Name>NET_GATEWAY_0</Name>
+            <Font used="false"/>
+         </Cell>
+         <Cell idx="13">
+            <Colors/>
+            <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>
+            <Name>NET_GATEWAY_1</Name>
+            <Font used="false"/>
+         </Cell>
+         <Cell idx="14">
+            <Colors/>
+            <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>
+            <Name>NET_GATEWAY_2</Name>
+            <Font used="false"/>
+         </Cell>
+         <Cell idx="15">
+            <Colors/>
+            <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>
+            <Name>NET_GATEWAY_3</Name>
+            <Font used="false"/>
+         </Cell>
          <Cell idx="16">
             <Colors/>
             <Compare compare1="0" compare2="0" conditional1="0" conditional2="0"/>

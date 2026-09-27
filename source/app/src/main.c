@@ -7,15 +7,17 @@
 #include "modbus_tcp_server.h"
 #include "modbus_reg_model.h"
 #include "app_bridge.h"
+#include "i2c_hw.h"
+#include "settings.h"
 
 /******************************************************************************/
 
 static w5500_t w5500_device;
 
-static uint8_t g_net_mac[6] = {0x02, 0x00, 0xAA, 0xBB, 0xCC, 0xDD};
-static uint8_t g_net_subnet[4] = {255, 255, 255, 0};
-static uint8_t g_net_ip[4] = {192, 168, 88, 128};
-static uint8_t g_net_gateway[4] = {192, 168, 88, 1};
+uint8_t g_net_mac[6];
+uint8_t g_net_subnet[4];
+uint8_t g_net_ip[4];
+uint8_t g_net_gateway[4];
 
 /******************************************************************************/
 
@@ -34,6 +36,10 @@ void main(void)
 {
   wk_system_clock_config();
   hw_config();
+
+  hw_i2c_init();
+
+  settings_load();
 
   w5500_init(&w5500_device, 0);
   delay_ms(1000);

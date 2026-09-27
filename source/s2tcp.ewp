@@ -359,6 +359,8 @@
                     <state>$PROJ_DIR$/drivers/AT32F413_HAL_Driver/inc</state>
                     <state>$PROJ_DIR$/drivers/AT32F413_CMSIS_Driver/</state>
                     <state>$PROJ_DIR$/drivers/w5500/inc/</state>
+                    <state>$PROJ_DIR$/drivers/i2c_hw/inc/</state>
+                    <state>$PROJ_DIR$/drivers/24AA02E48T/inc/</state>
                     <state>$PROJ_DIR$/external/ModbusSlave/include</state>
                     <state>$PROJ_DIR$\external\RingFIFO\include\</state>
                     <state>$PROJ_DIR$\external\SerialRingBuffer\include\</state>
@@ -2206,6 +2208,9 @@
                 <name>$PROJ_DIR$\app\inc\modbus_tcp_server.h</name>
             </file>
             <file>
+                <name>$PROJ_DIR$\app\inc\settings.h</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\app\inc\system_clock.h</name>
             </file>
             <file>
@@ -2227,6 +2232,9 @@
                 <name>$PROJ_DIR$\app\src\modbus_tcp_server.c</name>
             </file>
             <file>
+                <name>$PROJ_DIR$\app\src\settings.c</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\app\src\system_clock.c</name>
             </file>
             <file>
@@ -2236,6 +2244,21 @@
     </group>
     <group>
         <name>drivers</name>
+        <group>
+            <name>24AA02E48T</name>
+            <group>
+                <name>inc</name>
+                <file>
+                    <name>$PROJ_DIR$\drivers\24AA02E48T\inc\i2c_eeprom.h</name>
+                </file>
+            </group>
+            <group>
+                <name>src</name>
+                <file>
+                    <name>$PROJ_DIR$\drivers\24AA02E48T\src\i2c_eeprom.c</name>
+                </file>
+            </group>
+        </group>
         <group>
             <name>AT32F413_CMSIS_Driver</name>
             <file>
@@ -2319,6 +2342,21 @@
             <file>
                 <name>$PROJ_DIR$\drivers\AT32F413_HAL_Driver\src\at32f413_wwdt.c</name>
             </file>
+        </group>
+        <group>
+            <name>i2c_hw</name>
+            <group>
+                <name>inc</name>
+                <file>
+                    <name>$PROJ_DIR$\drivers\i2c_hw\inc\i2c_hw.h</name>
+                </file>
+            </group>
+            <group>
+                <name>src</name>
+                <file>
+                    <name>$PROJ_DIR$\drivers\i2c_hw\src\i2c_hw.c</name>
+                </file>
+            </group>
         </group>
         <group>
             <name>w5500</name>
@@ -2413,6 +2451,9 @@
                 <name>$PROJ_DIR$\hw_config\inc\hw_gpio_config.h</name>
             </file>
             <file>
+                <name>$PROJ_DIR$\hw_config\inc\hw_i2c_config.h</name>
+            </file>
+            <file>
                 <name>$PROJ_DIR$\hw_config\inc\hw_spi_config.h</name>
             </file>
             <file>
@@ -2438,6 +2479,9 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\hw_config\src\hw_gpio_config.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\hw_config\src\hw_i2c_config.c</name>
             </file>
             <file>
                 <name>$PROJ_DIR$\hw_config\src\hw_interrupts.c</name>
