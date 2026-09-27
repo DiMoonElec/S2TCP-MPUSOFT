@@ -23,6 +23,15 @@
             <ModeSub name="Debug interface" value="SWD"/>
         </Mode>
     </DEBUG>
+    <I2C1>
+        <Mode>
+            <ModeSub name="I2C" value="I2C"/>
+        </Mode>
+        <Parameters>
+            <ParametersSub name="DualAddressMode" value="DISABLE"/>
+            <ParametersSub name="GeneralCallMode" value="FALSE"/>
+        </Parameters>
+    </I2C1>
     <SPI2>
         <Mode>
             <ModeSub name="Mode" value="Full_Duplex_Master"/>
@@ -64,6 +73,8 @@
         <CRM_IRQHandler>0;0;0;0;0</CRM_IRQHandler>
         <DMA1_Channel1_IRQHandler>1;0;0;0;0</DMA1_Channel1_IRQHandler>
         <DMA1_Channel2_IRQHandler>0;0;0;0;0</DMA1_Channel2_IRQHandler>
+        <I2C1_EVT_IRQHandler>1;0;0;0;0</I2C1_EVT_IRQHandler>
+        <I2C1_ERR_IRQHandler>1;0;0;0;0</I2C1_ERR_IRQHandler>
         <SPI2_IRQHandler>0;0;0;0;0</SPI2_IRQHandler>
         <USART1_IRQHandler>1;0;0;0;0</USART1_IRQHandler>
     </NVIC>
@@ -107,6 +118,8 @@
         <PinSub pinname="PA14" signalname="DEBUG_JTCK_SWCLK" signaltype="2"/>
         <PinSub pinname="PB6" signalname="USART1_TX" signaltype="3"/>
         <PinSub pinname="PB7" signalname="USART1_RX" signaltype="3"/>
+        <PinSub pinname="PB8" signalname="I2C1_SCL" signaltype="3"/>
+        <PinSub pinname="PB9" signalname="I2C1_SDA" signaltype="3"/>
     </PINInfo>
     <ProjectInfomation>
         <ProjectName>AT32F413CBT7_WorkBench</ProjectName>
